@@ -118,9 +118,14 @@ its measured aspect ratio(s):
 ```
 
 Generating this file (scanning your library for actual displayed aspect ratios,
-including movies with varying/IMAX ratios) is done by a separate scanner. If you
-don't have one, leave `ASPECT_RATIOS_JSON_PATH` unset and rely on the
-blu-ray.com fallback.
+including movies with varying/IMAX ratios) is done by a separate scanner. This
+JSON, populated from Plex file paths, is the **reliable** source of aspect
+ratios.
+
+> **blu-ray.com fallback is best-effort.** When a title isn't in the JSON, the
+> service tries blu-ray.com — but the site actively resists scraping and often
+> returns nothing. Treat it as a bonus, not a substitute for the JSON database.
+> Failures are logged and resolve to `unknown` (no projector command sent).
 
 ## MQTT topics
 

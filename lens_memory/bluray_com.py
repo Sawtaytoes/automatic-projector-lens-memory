@@ -11,6 +11,13 @@ Changes from the original:
   * Adds a request timeout and treats every failure as a soft miss (``None``)
     so brittle/bot-blocked scraping never crashes the service. The original
     returned the sentinel string ``"NO_MATCH"``.
+
+Reality check: blu-ray.com actively resists scraping. Its quicksearch results
+are rendered in a way this direct XPath often can't reach, so this fallback is
+**best-effort** and frequently returns ``None`` — the exact aspect-ratio JSON
+(populated from Plex file paths) is the reliable path. This is kept as a faithful
+port of the original behaviour; improving it (follow the first result to its
+detail page, or a non-scraping metadata source) is future work.
 """
 
 from __future__ import annotations
