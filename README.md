@@ -146,6 +146,13 @@ ratios.
   from your library in this same package.
 - **Manual override** — a `select` entity to force a mode.
 
+## Documentation
+
+- [Design decisions](docs/design-decisions.md) — why MQTT, why HA is the input source, the
+  source-agnostic pipeline, and the blu-ray.com caveat.
+- [Original Home Assistant implementation](docs/original-home-assistant-implementation.md) —
+  the archived `shell_command` + scripts + blueprint this replaced, with an old→new mapping.
+
 ## Development
 
 ```bash
