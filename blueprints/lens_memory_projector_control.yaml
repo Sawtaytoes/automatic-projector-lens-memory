@@ -1,0 +1,72 @@
+blueprint:
+  name: Lens Memory — Control Projector
+  description: |
+    Sends the resolved lens-memory mode to your projector's remote whenever the
+    `automatic-projector-lens-memory` service publishes a new target mode.
+
+    The service exposes the mode as the sensor `sensor.lens_memory_target_mode`
+    (auto-created via MQTT discovery). This blueprint forwards that sensor's
+    value to `remote.send_command` as the command name — so the mode values in
+    your service's `LENS_MODE_MAPPING` must match the command names your remote
+    knows (e.g. `mode_1`, `mode_2`, ... for a JVC lens-memory preset remote).
+  domain: automation
+  homeassistant:
+    min_version: 2024.10.0
+  input:
+    mode_sensor:
+      name: Lens Memory Target Mode Sensor
+      description: The sensor published by the service (default `sensor.lens_memory_target_mode`).
+      default: sensor.lens_memory_target_mode
+      selector:
+        entity:
+          filter:
+            domain: sensor
+    projector_remote:
+      name: Projector Remote
+      description: The remote entity that recalls the projector's lens-memory presets.
+      selector:
+        entity:
+          filter:
+            domain: remote
+    num_repeats:
+      name: Command Repeats
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 5
+          mode: box
+    delay_secs:
+      name: Delay Between Repeats (seconds)
+      default: 0.4
+      selector:
+        number:
+          min: 0
+          max: 5
+          step: 0.1
+          mode: box
+
+mode: restart
+
+triggers:
+  - trigger: state
+    entity_id: !input mode_sensor
+
+conditions:
+  # Ignore the sensor becoming unavailable/unknown or restoring on restart.
+  - condition: template
+    value_template: >-
+      {{ trigger.to_state.state not in ['unknown', 'unavailable', 'none', ''] }}
+  - condition: template
+    value_template: >-
+      {{ trigger.from_state is none or trigger.from_state.state != trigger.to_state.state }}
+
+actions:
+  - action: remote.send_command
+    target:
+      entity_id: !input projector_remote
+    data:
+      command: "{{ trigger.to_state.state }}"
+      num_repeats: !input num_repeats
+      delay_secs: !input delay_secs
+      hold_secs: 0

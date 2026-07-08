@@ -1,0 +1,69 @@
+blueprint:
+  name: Lens Memory — Publish Playback Events
+  description: |
+    Publishes media player playback start/stop events to MQTT for the
+    `automatic-projector-lens-memory` service to resolve into a projector
+    lens-memory mode.
+
+    Add every media player whose playback should drive the projector: your
+    Plex players (they provide the rating key used for exact aspect-ratio
+    lookups) and/or streaming boxes such as an Apple TV, Roku, or Nvidia
+    Shield (title/year only — resolved via the blu-ray.com fallback).
+
+    No Plex token is stored here — the service holds it. This blueprint only
+    forwards what Home Assistant already knows about the playing media.
+  domain: automation
+  homeassistant:
+    min_version: 2024.10.0
+  input:
+    media_players:
+      name: Media Players
+      description: The media player entities that should drive the projector lens memory.
+      selector:
+        entity:
+          filter:
+            domain: media_player
+          multiple: true
+    mqtt_topic:
+      name: MQTT Event Topic
+      description: Must match the service's `MQTT_TOPIC_PREFIX` + `/event` (default `lens-memory/event`).
+      default: lens-memory/event
+      selector:
+        text:
+
+mode: restart
+
+triggers:
+  - trigger: state
+    entity_id: !input media_players
+    to: playing
+    id: Playing
+  - trigger: state
+    entity_id: !input media_players
+    to: idle
+    id: Idle
+  - trigger: state
+    entity_id: !input media_players
+    to: unavailable
+    id: Idle
+  - trigger: state
+    entity_id: !input media_players
+    to: "off"
+    id: Idle
+
+conditions: []
+
+actions:
+  - action: mqtt.publish
+    data:
+      topic: !input mqtt_topic
+      payload: >-
+        {{
+          {
+            'state': 'playing' if trigger.id == 'Playing' else 'idle',
+            'player': trigger.entity_id,
+            'rating_key': trigger.to_state.attributes.media_content_id | default(none),
+            'title': trigger.to_state.attributes.media_title | default(none),
+            'year': trigger.to_state.attributes.media_year | default(none)
+          } | to_json
+        }}

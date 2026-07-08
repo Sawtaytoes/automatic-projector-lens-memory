@@ -1,0 +1,12 @@
+services:
+  lens-memory:
+    build: .
+    # Or use a prebuilt image once published:
+    # image: ghcr.io/sawtaytoes/automatic-projector-lens-memory:latest
+    container_name: automatic-projector-lens-memory
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      # Optional: the aspectRatioCalculations.json produced by your scanner.
+      # Must match ASPECT_RATIOS_JSON_PATH in .env (default /data/...).
+      - ./data:/data:ro
