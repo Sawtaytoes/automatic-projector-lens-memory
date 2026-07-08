@@ -1,0 +1,35 @@
+[project]
+name = "automatic-projector-lens-memory"
+version = "0.1.0"
+description = "MQTT service that recalls a projector's lens-memory mode from the aspect ratio of the currently playing media"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Kevin Ghadyani" }]
+requires-python = ">=3.11"
+dependencies = [
+    "paho-mqtt>=2,<3",
+    "requests>=2.31",
+    "lxml>=5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.urls]
+Homepage = "https://github.com/Sawtaytoes/automatic-projector-lens-memory"
+
+[project.scripts]
+automatic-projector-lens-memory = "lens_memory.__main__:run"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["lens_memory"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
