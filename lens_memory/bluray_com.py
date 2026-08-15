@@ -24,7 +24,6 @@ from __future__ import annotations
 
 import logging
 import urllib.parse
-from typing import Optional
 
 import requests
 from lxml import html
@@ -46,7 +45,7 @@ class BlurayComClient:
         self.enabled = enabled
         self.timeout = timeout
 
-    def get_aspect_ratio(self, title: Optional[str], year: Optional[int] = None) -> Optional[str]:
+    def get_aspect_ratio(self, title: str | None, year: int | None = None) -> str | None:
         """Return e.g. ``"2.39"`` for ``title`` (+ optional ``year``), or ``None``."""
         if not self.enabled or not title:
             return None

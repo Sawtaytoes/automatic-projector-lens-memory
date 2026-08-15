@@ -11,7 +11,6 @@ from __future__ import annotations
 import json
 import logging
 import threading
-from typing import Optional
 
 import paho.mqtt.client as mqtt
 
@@ -111,5 +110,5 @@ class MqttService:
         self._publish(self.config.attributes_topic, json.dumps(attributes), retain=True)
 
     # --- helpers -------------------------------------------------------------
-    def _publish(self, topic: str, payload: Optional[str], retain: bool = False) -> None:
+    def _publish(self, topic: str, payload: str | None, retain: bool = False) -> None:
         self._client.publish(topic, payload, qos=1, retain=retain)

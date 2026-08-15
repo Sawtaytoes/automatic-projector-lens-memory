@@ -6,7 +6,6 @@ import json
 import logging
 import os
 from dataclasses import dataclass, field
-from typing import Optional
 
 from .mode_mapping import DEFAULT_MAPPING
 
@@ -49,7 +48,10 @@ def _env_mapping(name: str) -> dict[str, str]:
     try:
         parsed = json.loads(raw)
         if not isinstance(parsed, dict):
-            raise ValueError("mapping must be a JSON object")
+            # TRY004 is suppressed deliberately: the except below catches
+            # ValueError to fall back to DEFAULT_MAPPING, and a TypeError
+            # would escape it.
+            raise ValueError("mapping must be a JSON object")  # noqa: TRY004
         return {str(k): str(v) for k, v in parsed.items()}
     except (json.JSONDecodeError, ValueError) as error:
         logger.warning("Invalid %s (%s); using default mapping", name, error)
@@ -61,18 +63,18 @@ class Config:
     # MQTT
     mqtt_host: str
     mqtt_port: int
-    mqtt_username: Optional[str]
-    mqtt_password: Optional[str]
+    mqtt_username: str | None
+    mqtt_password: str | None
     topic_prefix: str
     discovery_prefix: str
 
     # Plex
-    plex_url: Optional[str]
-    plex_token: Optional[str]
+    plex_url: str | None
+    plex_token: str | None
     plex_verify_tls: bool
 
     # Aspect-ratio JSON
-    aspect_ratios_json_path: Optional[str]
+    aspect_ratios_json_path: str | None
     aspect_ratio_calculation: str
 
     # blu-ray.com fallback
@@ -107,7 +109,7 @@ class Config:
         return f"{self.topic_prefix}/attributes"
 
     @classmethod
-    def from_env(cls) -> "Config":
+    def from_env(cls) -> Config:
         host = os.environ.get("MQTT_HOST")
         if not host:
             raise SystemExit("MQTT_HOST is required")

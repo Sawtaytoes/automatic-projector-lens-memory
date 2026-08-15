@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +36,7 @@ CALCULATION_TYPES = (
 class AspectRatioLookup:
     """Loads the calculations JSON once and indexes lookups by file path."""
 
-    def __init__(self, json_path: Optional[str], calculation_type: str):
+    def __init__(self, json_path: str | None, calculation_type: str):
         self.json_path = json_path
         self.calculation_type = calculation_type
         self._data: dict[str, dict[str, str]] = {}
@@ -64,7 +63,7 @@ class AspectRatioLookup:
     def enabled(self) -> bool:
         return bool(self._data)
 
-    def lookup(self, media_file_path: Optional[str]) -> Optional[str]:
+    def lookup(self, media_file_path: str | None) -> str | None:
         """Return the configured aspect ratio for ``media_file_path`` or ``None``."""
         if not media_file_path:
             return None

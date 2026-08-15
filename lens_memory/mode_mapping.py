@@ -12,7 +12,6 @@ tolerance, so a scanned ``2.40`` still resolves to the ``2.39`` bucket.
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +38,7 @@ class ModeMapper:
                 logger.warning("Ignoring non-numeric mapping key %r", ratio)
         self.tolerance = tolerance
 
-    def resolve(self, aspect_ratio: Optional[str]) -> Optional[str]:
+    def resolve(self, aspect_ratio: str | None) -> str | None:
         """Return the mode for ``aspect_ratio`` (e.g. ``"2.39"``) or ``None``."""
         if aspect_ratio is None:
             return None
@@ -49,7 +48,7 @@ class ModeMapper:
             logger.info("Aspect ratio %r is not numeric; no mode.", aspect_ratio)
             return None
 
-        best_mode: Optional[str] = None
+        best_mode: str | None = None
         best_delta = self.tolerance
         for ratio, mode in self._buckets:
             delta = abs(value - ratio)

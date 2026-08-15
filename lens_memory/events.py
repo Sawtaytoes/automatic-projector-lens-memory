@@ -9,14 +9,14 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 # Plex media_content_id can arrive as a bare rating key ("12345") or as a full
 # library key path ("/library/metadata/12345"). Pull the trailing digits.
 _RATING_KEY_DIGITS = re.compile(r"(\d+)\s*$")
 
 
-def _clean_str(value: Any) -> Optional[str]:
+def _clean_str(value: Any) -> str | None:
     if value is None:
         return None
     text = str(value).strip()
@@ -25,7 +25,7 @@ def _clean_str(value: Any) -> Optional[str]:
     return text
 
 
-def _extract_rating_key(value: Any) -> Optional[str]:
+def _extract_rating_key(value: Any) -> str | None:
     text = _clean_str(value)
     if text is None:
         return None
@@ -33,7 +33,7 @@ def _extract_rating_key(value: Any) -> Optional[str]:
     return match.group(1) if match else None
 
 
-def _coerce_year(value: Any) -> Optional[int]:
+def _coerce_year(value: Any) -> int | None:
     text = _clean_str(value)
     if text is None:
         return None
@@ -46,17 +46,17 @@ class PlaybackEvent:
     """A snapshot of what a player is doing, normalized across sources."""
 
     state: str  # "playing" or "idle"
-    player: Optional[str] = None
-    rating_key: Optional[str] = None
-    title: Optional[str] = None
-    year: Optional[int] = None
+    player: str | None = None
+    rating_key: str | None = None
+    title: str | None = None
+    year: int | None = None
 
     @property
     def is_playing(self) -> bool:
         return self.state == "playing"
 
     @classmethod
-    def from_dict(cls, payload: dict[str, Any]) -> "PlaybackEvent":
+    def from_dict(cls, payload: dict[str, Any]) -> PlaybackEvent:
         """Build an event from a loosely-typed MQTT/JSON payload.
 
         Tolerates missing keys and Home Assistant's ``None``/``"unknown"``
