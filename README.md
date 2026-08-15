@@ -1,4 +1,4 @@
-# automatic-projector-lens-memory
+# Automatic-Projector-Lens-Memory
 
 Automatically recall your projector's **lens-memory** preset based on the aspect
 ratio of whatever's playing — so 2.39:1 films fill your scope screen and 1.85:1
