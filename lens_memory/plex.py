@@ -10,8 +10,7 @@ Changes from the original:
 from __future__ import annotations
 
 import logging
-import xml.etree.ElementTree as ElementTree
-from typing import Optional
+from xml.etree import ElementTree
 
 import requests
 import urllib3
@@ -22,8 +21,8 @@ logger = logging.getLogger(__name__)
 class PlexClient:
     def __init__(
         self,
-        base_url: Optional[str],
-        token: Optional[str],
+        base_url: str | None,
+        token: str | None,
         verify_tls: bool = True,
         timeout: float = 10.0,
     ):
@@ -41,7 +40,7 @@ class PlexClient:
     def enabled(self) -> bool:
         return bool(self.base_url and self.token)
 
-    def get_media_file_path(self, rating_key: str) -> Optional[str]:
+    def get_media_file_path(self, rating_key: str) -> str | None:
         """Return the file path of the first Part for ``rating_key`` or ``None``."""
         if not self.enabled or not rating_key:
             return None

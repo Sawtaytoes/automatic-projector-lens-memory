@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Optional
 
 from .aspect_ratios import AspectRatioLookup
 from .bluray_com import BlurayComClient
@@ -28,11 +27,11 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class Resolution:
-    aspect_ratio: Optional[str]  # e.g. "2.39", or None when unknown
-    mode: Optional[str]          # e.g. "mode_2", or None when unknown
-    source: Optional[str] = None  # which stage produced the ratio
-    media_file_path: Optional[str] = None
-    title: Optional[str] = None
+    aspect_ratio: str | None  # e.g. "2.39", or None when unknown
+    mode: str | None          # e.g. "mode_2", or None when unknown
+    source: str | None = None  # which stage produced the ratio
+    media_file_path: str | None = None
+    title: str | None = None
 
 
 class Resolver:
@@ -55,9 +54,9 @@ class Resolver:
             # Idle: return the reset mode and clear the aspect ratio.
             return Resolution(aspect_ratio=None, mode=self.idle_mode, source="idle")
 
-        aspect_ratio: Optional[str] = None
-        source: Optional[str] = None
-        media_file_path: Optional[str] = None
+        aspect_ratio: str | None = None
+        source: str | None = None
+        media_file_path: str | None = None
 
         # 1 + 2: Plex file path -> local JSON lookup
         if event.rating_key and self.plex.enabled:
