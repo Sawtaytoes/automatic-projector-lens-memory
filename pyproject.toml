@@ -13,7 +13,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.6"]
+# ruff is PINNED, not floated: CI runs `pip install -e ".[dev]"` then
+# `ruff check .`, so a new ruff release adds rules and turns main red with no
+# code change (that is exactly what UP045 did on 2026-08-14). Bump this
+# deliberately, with the fixes in the same PR.
+dev = ["pytest>=8", "ruff==0.16.3"]
 
 [project.urls]
 Homepage = "https://github.com/Sawtaytoes/automatic-projector-lens-memory"
